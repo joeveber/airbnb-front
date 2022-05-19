@@ -1,84 +1,134 @@
+import {
+  Button,
+  Text,
+  TextInput,
+  View,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  SafeAreaView,
+  StatusBar,
+  Dimensions,
+} from "react-native";
 import { useNavigation } from "@react-navigation/core";
-import { Button, Text, TextInput, View, TouchableOpacity } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 
-export default function SignInScreen({ setToken }) {
+import CustomInput from "../components/CustomInput";
+
+export default function SignInScreen({ setToken, navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const navigation = useNavigation();
-
+  const [error, setError] = useState("");
   ///
-  const handleSignin = async (event) => {
-    console.log("aaa");
-    try {
-      event.preventDefault();
-
-      const response = await axios.post(
-        `https://express-airbnb-api.herokuapp.com/user/log_in`,
-        {
-          email: email,
-          password: password,
+  const handleSubmit = async () => {
+    setError("");
+    if (email && password) {
+      try {
+        const response = await axios.post(
+          "https://express-airbnb-api.herokuapp.com/user/log_in",
+          {
+            email,
+            password,
+          }
+        );
+        console.log(response.data);
+        setToken(response.data.token);
+        alert("You are signed in!");
+      } catch (error) {
+        console.log(error);
+        console.log(error.response.data);
+        if (error.response.data) {
+          setError(error.response.data.error);
         }
-      );
-      console.log("aaa");
-      console.log(response.data);
-
-      if (response.data.userToken) {
-        console.log("User logged in");
-        setUser(response.data.userToken);
-        alert("Vous êtes connecté");
-        navigate("/");
-      } else {
-        alert("Adresse e-mail ou mot de passe erroné");
       }
-    } catch (error) {
-      console.log(error);
-      console.log(error.message);
-      console.log(error.response.status);
+    } else {
+      setError("Veuillez remplir tous les champs");
     }
   };
   ///
 
   return (
-    <KeyboardAwareScrollView>
-      <View>
-        <Text>Name: </Text>
-        <TextInput
-          placeholder="Username"
-          onChangeText={(text) => {
-            setEmail(text);
-          }}
-          value={email}
-        />
-        <Text>Password: </Text>
-        <TextInput
-          placeholder="Password"
-          secureTextEntry={true}
-          onChangeText={(text) => {
-            setPassword(text);
-          }}
-          value={password}
-        />
-        <Button
-          title="Sign in"
-          onPress={async () => {
-            const userToken = "secret-token";
-            setToken(userToken);
-            handleSignin;
-            console.log({ email }, { password });
-          }}
-        />
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate("SignUp");
-          }}
-        >
-          <Text>Create an account</Text>
-        </TouchableOpacity>
-      </View>
-    </KeyboardAwareScrollView>
+    <SafeAreaView>
+      <KeyboardAwareScrollView
+      // contentContainerStyle=
+      >
+        <View style={styles.container}>
+          <Image
+            style={styles.logo}
+            source={require("../assets/images/airbnb-logo.png")}
+          />
+          <Text style={styles.title}>Sign In</Text>
+          <CustomInput placeholder="email" setState={setEmail} />
+          <CustomInput
+            placeholder="password"
+            setState={setPassword}
+            password={true}
+          />
+
+          {error ? <Text>{error}</Text> : null}
+          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+            <Text>Sign In</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.signinRedirec}
+            onPress={() => {
+              navigation.navigate("SignUp");
+            }}
+          >
+            <Text>No account? Register.</Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAwareScrollView>
+    </SafeAreaView>
   );
 }
+
+const windowHeight = Dimensions.get("window").height;
+const styles = StyleSheet.create({
+  container: {
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    flex: 1,
+    height: windowHeight,
+    backgroundColor: "white",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  logo: {
+    marginTop: 10,
+    height: 100,
+    width: 100,
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: "800",
+    color: "grey",
+    height: 70,
+    marginTop: 10,
+  },
+  bigInput: {
+    width: "80%",
+    marginTop: 30,
+    borderColor: "#FFBAC0",
+    borderWidth: 2,
+    height: 80,
+  },
+  button: {
+    borderColor: "#FFBAC0",
+    borderRadius: 20,
+    borderWidth: 3,
+    marginTop: 30,
+    width: "60%",
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  signinRedirec: {
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    color: "#727272",
+  },
+});

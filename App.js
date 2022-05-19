@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import HomeScreen from "./containers/HomeScreen";
 import ProfileScreen from "./containers/ProfileScreen";
+import RoomScreen from "./containers/RoomScreen";
 import SignInScreen from "./containers/SignInScreen";
 import SignUpScreen from "./containers/SignUpScreen";
 import SettingsScreen from "./containers/SettingsScreen";
@@ -60,10 +61,10 @@ export default function App() {
         {userToken === null ? (
           // No token found, user isn't signed in
           <>
-            <Stack.Screen name="SignIn">
-              {() => <SignInScreen setToken={setToken} />}
+            <Stack.Screen name="SignIn" options={{ headerShown: false }}>
+              {(props) => <SignInScreen {...props} setToken={setToken} />}
             </Stack.Screen>
-            <Stack.Screen name="SignUp">
+            <Stack.Screen name="SignUp" options={{ headerShown: false }}>
               {(props) => <SignUpScreen {...props} setToken={setToken} />}
             </Stack.Screen>
           </>
@@ -99,7 +100,6 @@ export default function App() {
                       >
                         {() => <HomeScreen />}
                       </Stack.Screen>
-
                       <Stack.Screen
                         name="Profile"
                         options={{
@@ -107,6 +107,14 @@ export default function App() {
                         }}
                       >
                         {() => <ProfileScreen />}
+                      </Stack.Screen>
+                      <Stack.Screen
+                        name="Room"
+                        options={{
+                          title: "Room",
+                        }}
+                      >
+                        {() => <RoomScreen />}
                       </Stack.Screen>
                     </Stack.Navigator>
                   )}

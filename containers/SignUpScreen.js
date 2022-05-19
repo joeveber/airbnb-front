@@ -6,6 +6,9 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
+  SafeAreaView,
+  StatusBar,
+  Dimensions,
 } from "react-native";
 import { useState } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -37,6 +40,8 @@ export default function SignUpScreen({ setToken, navigation }) {
             }
           );
           console.log(response.data);
+          setToken(response.data.token);
+          alert("You are signed in!");
         } catch (error) {
           console.log(error);
           console.log(error.response.data);
@@ -53,57 +58,62 @@ export default function SignUpScreen({ setToken, navigation }) {
   };
 
   return (
-    <KeyboardAwareScrollView
-    // contentContainerStyle=
-    >
-      <View style={styles.container}>
-        <Image
-          style={styles.logo}
-          source={require("../assets/images/airbnb-logo.png")}
-        />
-        <Text style={styles.title}>Sign Up</Text>
-        <CustomInput placeholder="email" setState={setEmail} />
-        <CustomInput placeholder="username" setState={setUsername} />
-        <TextInput
-          value={description}
-          onChangeText={(text) => {
-            setDescription(text);
-          }}
-          multiline={true}
-          style={styles.bigInput}
-          placeholder="Describe yourself in a few words"
-        />
-        <Text>{description}</Text>
-        <CustomInput
-          placeholder="password"
-          setState={setPassword}
-          password={true}
-        />
-        <CustomInput
-          placeholder="confirm password"
-          setState={setConfirmpassword}
-          password={true}
-        />
-        {error ? <Text>{error}</Text> : null}
-        <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-          <Text>Sign Up</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.signinRedirec}
-          onPress={() => {
-            navigation.navigate("SignIn");
-          }}
-        >
-          <Text>Already have an account? Sign in.</Text>
-        </TouchableOpacity>
-      </View>
-    </KeyboardAwareScrollView>
+    <SafeAreaView>
+      <KeyboardAwareScrollView
+      // contentContainerStyle=
+      >
+        <View style={styles.container}>
+          <Image
+            style={styles.logo}
+            source={require("../assets/images/airbnb-logo.png")}
+          />
+          <Text style={styles.title}>Sign Up</Text>
+          <CustomInput placeholder="email" setState={setEmail} />
+          <CustomInput placeholder="username" setState={setUsername} />
+          <TextInput
+            value={description}
+            onChangeText={(text) => {
+              setDescription(text);
+            }}
+            multiline={true}
+            style={styles.bigInput}
+            placeholder="Describe yourself in a few words"
+          />
+          <Text>{description}</Text>
+          <CustomInput
+            placeholder="password"
+            setState={setPassword}
+            password={true}
+          />
+          <CustomInput
+            placeholder="confirm password"
+            setState={setConfirmpassword}
+            password={true}
+          />
+          {error ? <Text>{error}</Text> : null}
+          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+            <Text>Sign Up</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.signinRedirec}
+            onPress={() => {
+              navigation.navigate("SignIn");
+            }}
+          >
+            <Text>Already have an account? Sign in.</Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAwareScrollView>
+    </SafeAreaView>
   );
 }
 
+const windowHeight = Dimensions.get("window").height;
 const styles = StyleSheet.create({
   container: {
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     flex: 1,
+    height: windowHeight,
     backgroundColor: "white",
     alignItems: "center",
   },
