@@ -10,6 +10,7 @@ import RoomScreen from "./containers/RoomScreen";
 import SignInScreen from "./containers/SignInScreen";
 import SignUpScreen from "./containers/SignUpScreen";
 import SettingsScreen from "./containers/SettingsScreen";
+import LocationScreen from "./containers/LocationScreen";
 import SplashScreen from "./containers/SplashScreen";
 
 const Tab = createBottomTabNavigator();
@@ -115,6 +116,60 @@ export default function App() {
                         }}
                       >
                         {() => <RoomScreen />}
+                      </Stack.Screen>
+                    </Stack.Navigator>
+                  )}
+                </Tab.Screen>
+                <Tab.Screen
+                  name="TabLocation"
+                  options={{
+                    tabBarLabel: "Around me",
+                    tabBarIcon: ({ color, size }) => (
+                      <Ionicons
+                        name={"location-outline"}
+                        size={size}
+                        color={color}
+                      />
+                    ),
+                  }}
+                >
+                  {() => (
+                    <Stack.Navigator>
+                      <Stack.Screen
+                        name="Location"
+                        options={{
+                          title: "Location",
+                          headerShown: false,
+                        }}
+                      >
+                        {() => <LocationScreen setToken={setToken} />}
+                      </Stack.Screen>
+                    </Stack.Navigator>
+                  )}
+                </Tab.Screen>
+                <Tab.Screen
+                  name="ProfileLocation"
+                  options={{
+                    tabBarLabel: "Profile",
+                    tabBarIcon: ({ color, size }) => (
+                      <Ionicons
+                        name={"person-outline"}
+                        size={size}
+                        color={color}
+                      />
+                    ),
+                  }}
+                >
+                  {() => (
+                    <Stack.Navigator>
+                      <Stack.Screen
+                        name="Profile"
+                        options={{
+                          title: "Profile",
+                          headerShown: false,
+                        }}
+                      >
+                        {() => <ProfileScreen token={userToken} />}
                       </Stack.Screen>
                     </Stack.Navigator>
                   )}

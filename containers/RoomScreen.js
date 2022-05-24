@@ -8,8 +8,10 @@ import {
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
+  ImageBackground,
 } from "react-native";
 import { useState, useEffect } from "react";
+import { Entypo } from "@expo/vector-icons";
 import axios from "axios";
 
 export default function RouteScreen() {
@@ -34,7 +36,18 @@ export default function RouteScreen() {
     };
     fetchData();
   }, [params]);
-  ///
+
+  const displayStars = (num) => {
+    const tab = [];
+    for (let i = 0; i < 5; i++) {
+      if (i < num) {
+        tab.push(<Entypo key={i} name="star" size={24} color="#F5C60D" />);
+      } else {
+        tab.push(<Entypo key={i} name="star" size={24} color="grey" />);
+      }
+    }
+    return tab;
+  };
 
   return isLoading === true ? (
     <View>
@@ -46,21 +59,31 @@ export default function RouteScreen() {
     </View>
   ) : (
     <View style={styles.container}>
-      <Image
-        source={{
-          uri: data.photos[0].url,
-        }}
-        style={styles.image}
-        resizeMode="contain"
-      />
-      <View>
-        <Text style={styles.title}>{data.title}</Text>
-        <View style={styles.rating}>
-          <Text>{data.ratingValue} stars</Text>
-          <Text> {data.reviews} reviews</Text>
+      <ImageBackground
+        style={styles.imageBackground}
+        source={{ uri: data.photos[0].url }}
+      >
+        <View style={styles.priceContainer}>
+          <Text style={styles.price}>{data.price} €</Text>
+        </View>
+      </ImageBackground>
+      <View style={styles.bottomPart}>
+        <View style={styles.leftPart}>
+          <Text style={styles.title}>{data.title}</Text>
+          <View style={styles.rating}>
+            <View style={styles.ratingStars}>
+              {displayStars(data.ratingValue)}
+            </View>
+            <Text> {data.reviews} reviews</Text>
+          </View>
+        </View>
+        <View style={styles.rightPart}>
+          <Image
+            style={styles.imageUser}
+            source={{ uri: data.user.account.photo.url }}
+          />
         </View>
       </View>
-      <Text>{data.price} €</Text>
     </View>
   );
 }
@@ -81,5 +104,39 @@ const styles = StyleSheet.create({
   },
   rating: {
     flexDirection: "row",
+  },
+  ratingStars: {
+    flexDirection: "row",
+  },
+  imageBackground: {
+    height: 250,
+    justifyContent: "flex-end",
+  },
+  priceContainer: {
+    height: 50,
+    width: 100,
+    backgroundColor: "black",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+    marginLeft: 20,
+  },
+  price: {
+    color: "white",
+  },
+  bottomPart: {
+    flexDirection: "row",
+    marginTop: 10,
+  },
+  leftPart: {
+    width: "80%",
+  },
+  rightPart: {
+    width: "20%",
+  },
+  imageUser: {
+    height: 60,
+    width: 60,
+    borderRadius: 30,
   },
 });
